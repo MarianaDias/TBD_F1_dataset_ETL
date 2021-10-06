@@ -1,12 +1,13 @@
 from pymongo import MongoClient
 
-MONGO_CONNECTION_STR = "mongodb://localhost:27017/TBD_G14"
+MONGO_CONNECTION_STR = "mongodb://localhost:27017/"
+DB_TEST = "F1"
 COLLECTION_TEST = "f1_test_collection"
 
 
-def get_database(connection_string, collection_name):
-    client = MongoClient(connection_string)
-    return client[collection_name]
+def get_database():
+    client = MongoClient(MONGO_CONNECTION_STR)
+    return client[DB_TEST]
 
 
 def create_db_collection(name, items, dbname):
@@ -31,5 +32,5 @@ def create_db_test_collection():
         "location": [{"city": "Budapest", "country": "Hungary"}]
     }
 
-    create_db_collection("f1_test_collection", [item_1, item_2], get_database(MONGO_CONNECTION_STR, COLLECTION_TEST))
+    create_db_collection(COLLECTION_TEST, [item_1, item_2], get_database())
     print("Test items added")
