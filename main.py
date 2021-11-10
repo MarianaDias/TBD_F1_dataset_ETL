@@ -1,4 +1,6 @@
 import pandas as pd
+
+import db_load
 import transformation
 import mongodb_connection as mongo_conn
 import neo4j_connection as neo_conn
@@ -41,10 +43,11 @@ def main():
     drivers_df = transformation.create_driver_fullname_col(drivers_df)
     drivers_df = transformation.complete_drivers_code(drivers_df)
 
-    transformation.create_championship_aggregate(races_df, constructors_df,constructors_results_df,drivers_df, results_df)
+    transformation.create_championship_aggregate(races_df, constructors_df, constructors_results_df, drivers_df, results_df)
+    transformation.create_race_aggregate(circuits_df, races_df, lap_time_df, results_df,
+                                         drivers_df)
 
-    # print_df("", lap_time_df["seconds"])
-    # print_df("", drivers_df["fullname"])
+    db_load.init_neo_load(drivers_df, constructors_df, races_df, results_df)
 
     # MongoDB Test Connection
     # dbname = mongo_conn.get_database()
