@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 MONGO_CONNECTION_STR = "mongodb://localhost:27017/"
 DB_TEST = "F1"
-COLLECTION_TEST = "f1_test_collection"
+COLLECTION_TEST = "f1_collection"
 
 
 def get_database():
@@ -34,3 +34,8 @@ def create_db_test_collection():
 
     create_db_collection(COLLECTION_TEST, [item_1, item_2], get_database())
     print("Test items added")
+
+
+def create_agg(items, message, collection):
+    create_db_collection(collection, items, get_database())
+    print(message)

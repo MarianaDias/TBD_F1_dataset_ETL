@@ -2,7 +2,6 @@ import pandas as pd
 
 import db_load
 import transformation
-import mongodb_connection as mongo_conn
 
 
 def load_csv_file(path):
@@ -20,7 +19,7 @@ def print_df(name, df):
 
 
 def main():
-    # Load all dataset into dataframes
+    # Extract
     circuits_df = load_csv_file('f1_dataset/circuits.csv')
     drivers_df = load_csv_file('f1_dataset/drivers.csv')
     constructors_df = load_csv_file('f1_dataset/constructors.csv')
@@ -36,18 +35,17 @@ def main():
     drivers_df = transformation.complete_drivers_code(drivers_df)
     print('Transformações executadas')
 
-    transformation.create_championship_aggregate(races_df, constructors_df, constructors_results_df, drivers_df,
-                                                 results_df)
-    transformation.create_race_aggregate(circuits_df, races_df, lap_time_df, results_df,
-                                         drivers_df)
+    # Transformations
+    championship_data = transformation.create_championship_aggregate(races_df, constructors_df, constructors_results_df,
+                                                                     drivers_df,results_df)
+    races_data = transformation.create_circuit_aggregate(circuits_df, races_df, results_df,drivers_df)
+    lap_time_data = transformation.create_lap_time_aggregate(lap_time_df, drivers_df)
 
+    # Load
     db_load.init_neo_load(drivers_df, constructors_df, races_df, results_df)
+    db_load.init_mongo_load(races_data, championship_data, lap_time_data)
 
-    # MongoDB Test Connection
-    # dbname = mongo_conn.get_database()
-    # print(dbname)
-    # mongo_conn.create_db_test_collection()
-    # mongo_conn.find_all(dbname[mongo_conn.COLLECTION_TEST])
+    print("ETL Completo")
 
 
 if __name__ == '__main__':

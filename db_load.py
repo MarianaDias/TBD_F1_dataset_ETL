@@ -1,4 +1,6 @@
 import pandas as pd
+
+import mongodb_connection
 import neo4j_connection as neo_conn
 
 
@@ -37,3 +39,9 @@ def load_constructor_drivers_relation(constructor_df, driver_df, races_df, resul
             dfc = df.loc[relation['constructorRef'] == c]
             neo_conn.create_driver_constructor_relation(d,c,dfc['year'].to_list())
     print("Relationships Created at Neo")
+
+
+def init_mongo_load(races, championship, lap_time):
+    mongodb_connection.create_agg(races, 'Circuitos/Corridas carregadas no mongo', 'circuits')
+    mongodb_connection.create_agg(championship, 'Campionatos carregados no mongo', 'championship')
+    mongodb_connection.create_agg(lap_time, 'Tempos de volta carregados no mongo', 'lapTime')
