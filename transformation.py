@@ -65,6 +65,7 @@ def create_circuit_aggregate(circuits_df, races_df, results_df, drivers_df):
             r = merged_result_df.loc[merged_result_df['raceId'] == row['raceId']]
 
             race_item = {
+                'raceId': row['raceId'],
                 'year': row['year'],
                 'round': row['round'],
                 'name': row['raceName'],
