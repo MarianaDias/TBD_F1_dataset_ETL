@@ -1,5 +1,5 @@
 from neo4j import GraphDatabase
-from neo4j.exceptions import ConstraintError
+from neo4j.exceptions import ConstraintError, ClientError
 
 uri = "neo4j://localhost:7687"
 neo_driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
@@ -18,6 +18,7 @@ def create_driver_constructor_relation(driver, constructor, years):
             (driver, constructor, years)
     with neo_driver.session() as session:
         session.run(query)
+
 
 def create_constructor(constructor):
     query = "CREATE(d: Constructor { name: '%s' , ref: '%s', nationality: '%s' })" % (constructor["name"],
@@ -45,14 +46,19 @@ def create_neo_constrains():
     constrain_constructor = "CREATE CONSTRAINT ON (c:Constructor) ASSERT c.ref IS UNIQUE"
     constrain_driver = "CREATE CONSTRAINT ON (c:Driver) ASSERT c.ref IS UNIQUE"
     with neo_driver.session() as session:
-        session.run(constrain_constructor)
-        session.run(constrain_driver)
+        try:
+            session.run(constrain_constructor)
+            session.run(constrain_driver)
+        except ClientError:
+            print('Constrains already created')
+
 
 def find_all():
     query = "MATCH p=()-[r:DRIVEN_FOR]->() RETURN p"
     with neo_driver.session() as session:
         result = session.run(query)
         print(result.values())
+
 
 def close():
     neo_driver.close()
