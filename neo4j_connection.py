@@ -13,19 +13,11 @@ def create_driver_constructor_relation_test(driver_name, constructor_name):
         session.run(query)
 
 
-def create_driver_constructor_relation(driver_constructor):
-    query = "MATCH (d:Driver {ref:'%s'}),(c:Constructor {ref:'%s'}) CREATE ((d)-[r:DRIVEN_FOR {year: %d}]->(c))" % \
-            (driver_constructor["driverRef"], driver_constructor["constructorRef"], driver_constructor["year"])
+def create_driver_constructor_relation(driver, constructor, years):
+    query = "MATCH (d:Driver {ref:'%s'}),(c:Constructor {ref:'%s'}) CREATE ((d)-[r:DRIVEN_FOR {year: %s}]->(c))" % \
+            (driver, constructor, years)
     with neo_driver.session() as session:
         session.run(query)
-
-
-def find_all():
-    query = "MATCH p=()-[r:DRIVEN_FOR]->() RETURN p"
-    with neo_driver.session() as session:
-        result = session.run(query)
-        print(result.values())
-
 
 def create_constructor(constructor):
     query = "CREATE(d: Constructor { name: '%s' , ref: '%s', nationality: '%s' })" % (constructor["name"],
@@ -56,6 +48,11 @@ def create_neo_constrains():
         session.run(constrain_constructor)
         session.run(constrain_driver)
 
+def find_all():
+    query = "MATCH p=()-[r:DRIVEN_FOR]->() RETURN p"
+    with neo_driver.session() as session:
+        result = session.run(query)
+        print(result.values())
 
 def close():
     neo_driver.close()

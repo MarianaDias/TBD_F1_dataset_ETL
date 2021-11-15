@@ -38,6 +38,7 @@ def create_championship_aggregate(races_df, constructors_df, constructors_result
         championship_item = {"year": year, "constructorResults": constructors_year_df.drop(columns=['year']).to_dict('records'),
                              "driverResults": drivers_year_df.drop(columns=['year']).to_dict('records')}
         championship.append(championship_item)
+    print('Agregado de campionado criado')
     return championship
 
 
@@ -67,4 +68,5 @@ def create_race_aggregate(circuits_df, races_df, lap_time_df, results_df,  drive
         }
         agg.append(circuit_item)
     print(agg[0])
+    print('Agregado de corrida criado')
     return agg

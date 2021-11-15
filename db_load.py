@@ -31,6 +31,9 @@ def load_constructor_drivers_relation(constructor_df, driver_df, races_df, resul
     relation = pd.merge(relation, constructor_df, on='constructorId', how='left')[['driverId', 'constructorId',
                                                                                    'year', 'constructorRef']]
     relation = pd.merge(relation, driver_df, on='driverId')[['year', 'constructorRef', 'driverRef']]
-    for i in range(0, relation['year'].count()):
-        neo_conn.create_driver_constructor_relation(relation.iloc[i])
+    for d in relation['driverRef'].unique():
+        df = relation.loc[relation['driverRef'] == d]
+        for c in df['constructorRef'].unique():
+            dfc = df.loc[relation['constructorRef'] == c]
+            neo_conn.create_driver_constructor_relation(d,c,dfc['year'].to_list())
     print("Relationships Created at Neo")

@@ -3,7 +3,6 @@ import pandas as pd
 import db_load
 import transformation
 import mongodb_connection as mongo_conn
-import neo4j_connection as neo_conn
 
 
 def load_csv_file(path):
@@ -29,21 +28,16 @@ def main():
     results_df = load_csv_file('f1_dataset/results.csv')
     races_df = load_csv_file('f1_dataset/races.csv')
     lap_time_df = load_csv_file('f1_dataset/lapTimes.csv')
-
-    # print_df("Circuitos", circuits_df)
-    # print_df("Pilotos", drivers_df)
-    # print_df("Equipes de Construtores", constructors_df)
-    # print_df("Resultado dos Construtores", constructors_results_df)
-    # print_df("Resultados", results_df)
-    # print_df("Corridas", races_df)
-    # print_df("Tempos de Volta", lap_time_df)
+    print("Arquivos carregados")
 
     # Transformations
     lap_time_df = transformation.create_laptime_seconds(lap_time_df)
     drivers_df = transformation.create_driver_fullname_col(drivers_df)
     drivers_df = transformation.complete_drivers_code(drivers_df)
+    print('Transformações executadas')
 
-    transformation.create_championship_aggregate(races_df, constructors_df, constructors_results_df, drivers_df, results_df)
+    transformation.create_championship_aggregate(races_df, constructors_df, constructors_results_df, drivers_df,
+                                                 results_df)
     transformation.create_race_aggregate(circuits_df, races_df, lap_time_df, results_df,
                                          drivers_df)
 
@@ -54,12 +48,6 @@ def main():
     # print(dbname)
     # mongo_conn.create_db_test_collection()
     # mongo_conn.find_all(dbname[mongo_conn.COLLECTION_TEST])
-
-    # Neo4J test connection
-    # neo_conn.create_driver_constructor_relation("Max Verstappen", "Redbull")
-    # neo_conn.find_all()
-    # neo_conn.close()
-    # print("Descomente/Personalize os trechos que desejar executar")
 
 
 if __name__ == '__main__':
